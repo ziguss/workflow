@@ -2,6 +2,8 @@
 
 namespace ziguss\workflow;
 
+use ziguss\fsm\TransitionEvent;
+
 /**
  * @author ziguss <yudoujia@163.com>
  */
@@ -14,7 +16,7 @@ class StateMachine extends \ziguss\fsm\StateMachine
     public function __construct(TaskInterface $object, array $config)
     {
         foreach (array('test', 'before', 'after') as $position) {
-            $config['callbacks'][$position][] = array($this->getObject(), 'process');
+            $config['callbacks'][$position][] = array($this, 'callOperationProcess');
         }
 
         if (empty($config['transitions']) && !empty($config['operations'])) {
@@ -39,5 +41,14 @@ class StateMachine extends \ziguss\fsm\StateMachine
         }
 
         return array();
+    }
+
+    /**
+     * @param TransitionEvent $event
+     * @param $position
+     */
+    protected function callOperationProcess(TransitionEvent $event, $position)
+    {
+        $this->getObject()->getOperation($event->getTransition())->process($event, $position);
     }
 }
