@@ -16,7 +16,7 @@ class StateMachine extends \ziguss\fsm\StateMachine
     public function __construct(TaskInterface $object, array $config)
     {
         foreach (array('test', 'before', 'after') as $position) {
-            $config['callbacks'][$position][] = array($this, 'callOperationProcess');
+            $config['listeners'][$position][] = array($this, 'callOperationProcess');
         }
 
         if (empty($config['transitions']) && !empty($config['operations'])) {
